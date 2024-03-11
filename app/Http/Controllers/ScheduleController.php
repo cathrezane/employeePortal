@@ -14,6 +14,7 @@ class ScheduleController extends Controller
     {
         $userSchedule = Schedule::where('user_id', Auth::user()->id)->with('user', 'shift')->first();
 
+        // dd($userSchedule->shift);
         // $userSchedule->shift->days;
 
 

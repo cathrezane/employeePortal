@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Attendances;
+use App\Models\Schedule;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Shift;
 use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
@@ -13,32 +15,17 @@ class AttendanceController extends Controller
     //
     public function index()
     {
+        // $results = Attendances::where('user_id', $userId)->get();
 
-        $userId = Auth::user()->id;
-        $results = Attendances::where('user_id', $userId)
-    ->with([
-        'schedules' => function ($query) use ($userId) { // Eager load schedules
-            $query->where('user_id', $userId); // Filter by user_id
-            $query->with('shift'); // Eager load shift for each schedule
-        }
-    ])
-    ->orderBy('time_logged', 'desc')
-    // ->select('status', 'time_logged') // Commented out for full data retrieval
-    ->get();
-        // $results = Attendances::where('user_id', $userId)
-        // ->with([
-        // 'schedules' => function ($query) use ($userId) { // Eager load schedules
-        //     $query->where('user_id', $userId); // Filter by user_id
-        // },
-        // 'schedules.shifts' => function ($query) { // Eager load shifts through schedules
-        //     // Optional: Add filtering or other conditions for shifts here (if needed)
-        // }
-        // ])
-        // ->orderBy('time_logged', 'desc')
-        // // ->select('status', 'time_logged') // Select desired columns from Attendances
-        // ->get();
+        $attendance = Attendances::where('user_id', Auth::user()->id)->get();
+        
+        $userSchedule = Schedule::where('user_id', Auth::user()->id)->with('user', 'shift')->first();
 
-        dd($results);
+        $shift = Shift::where('id', $userSchedule->shift_id)->first();
+
+        dd($shift->days);
+
+        // dd($results);
 
         return view('pages.agent.attendance')->with(['results' => $results]);
     }

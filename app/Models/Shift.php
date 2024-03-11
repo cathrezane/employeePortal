@@ -9,7 +9,7 @@ class Shift extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'shift_id';
+    protected $table = "shifts";
     
     protected $casts = [
         'days' => 'json', // Ensure the 'days' attribute is cast to JSON
@@ -29,10 +29,10 @@ class Shift extends Model
         return $this->hasMany(Schedule::class);
     }
 
-    // public function workday()
-    // {
-    //     return $this->belongsTo(Workdays::class); // Assuming a "workdays" table
-    // }
+    public function workday()
+    {
+        return $this->belongsTo(Workdays::class); // Assuming a "workdays" table
+    }
 
     public function workdays() {
         // Assuming 'days' is the JSON column containing workday IDs

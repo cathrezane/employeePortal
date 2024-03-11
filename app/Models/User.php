@@ -51,16 +51,16 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
-    public function shifts()
-    {
-        return $this->hasMany(Shift::class);
-    }
+    // public function shifts()
+    // {
+    //     return $this->hasMany(Shift::class);
+    // }
 
     // app/Models/Shift.php
-    public function schedules()
-    {
-        return $this->hasMany(Schedule::class);
-    }
+    // public function schedules()
+    // {
+    //     return $this->hasMany(Schedule::class);
+    // }
 
     public function getWorkdayNamesAttribute()
     {
@@ -72,6 +72,6 @@ class User extends Authenticatable
 
     public function attendances()
     {
-        return $this->hasMany(Attendance::class);
+        return $this->hasMany(Attendances::class);
     }
 }
