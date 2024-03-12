@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->increments('id');
             $table->bigInteger('status')->nullable()->default(0);
-            $table->bigInteger('attendanceStatus')->nullable();
+            // $table->bigInteger('attendanceStatus')->nullable();
             $table->timestamp('time_logged')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
