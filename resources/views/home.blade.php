@@ -65,22 +65,42 @@
             /* Even darker green border on click */
         }
     </style>
-    @if (session('success'))
-        <div class="alert alert-success" id="timedMessage">
-            <p>Time is saved!</p>
-        </div>
-        <script>
-            // Hide the message after 5 seconds
-            setTimeout(function() {
-                document.getElementById('timedMessage').style.display = 'none';
-            }, 5000); // 5000 milliseconds = 5 seconds
-        </script>
-    @endif
+    
     <div id="div1">
         <p id="time"></p>
         <p id="date"></p>
     </div>
-
+    @if (session()->has('error'))
+    <script>
+        Swal.fire({
+        title: "Error!",
+        text: "{{ session()->get('error') }}",
+        icon: "error",
+        type: "error",
+        });
+    </script>
+    @endif
+    @if (session()->has('success'))
+    <script>
+        Swal.fire({
+        title: "Success!",
+        text: "{{ session()->get('success') }}",
+        icon: "success",
+        type: "success",
+        });
+    </script>
+    @endif
+    @if (session()->has('warning'))
+    <script>
+        Swal.fire({
+        title: "Warning!",
+        text: "{{ session()->get('warning') }}",
+        icon: "warning",
+        type: "warning",
+        });
+    </script>
+    @endif
+    
     <div class="d-flex flex-wrap justify-content-evenly mt-5 col-md-12">
         <div class="order-1 p-4 col-md-3 align-items-center rounded">
             @if (Auth::user()->status == 0 || Auth::user()->status == 4)
@@ -94,7 +114,7 @@
                     <button type="submit" class="text-white btn btn-success mx-5 px-5 pb-4 "><span style="font-size:50px;"><i class="bi bi-hourglass-top"></i></span><br>Clock-in</button>
                 </form>
             @elseif (Auth::user()->status == 1)
-                <form action="/attendance/store" method="post">
+                <form action="{{ route('onBreak') }}" method="post">
                     @csrf
                     <input type="date" name="date" value="{{ now()->format('Y-m-d') }}" style="display: none">
                     <input type="time" id="time_logged" name="time_logged"
@@ -104,7 +124,7 @@
                     <button type="submit" class="text-dark btn btn-light mx-5 px-5 pb-4 border border-dark"><span style="font-size:50px;"><i class="bi bi-stopwatch"></i></span><br>Break-out</button>
                 </form>
             @elseif (Auth::user()->status == 2)
-                <form action="/attendance/store" method="post">
+                <form action="{{ route('breakIn') }}" method="post">
                     @csrf
                     <input type="date" name="date" value="{{ now()->format('Y-m-d') }}" style="display: none">
                     <input type="time" id="time_logged" name="time_logged"
@@ -114,7 +134,7 @@
                     <button type="submit" class="text-white btn btn-dark mx-5 px-5 pb-4 border border-white"><span style="font-size:50px;"><i class="bi bi-stopwatch-fill"></i></span><br>Break-In</button>                  
                 </form>
             @elseif (Auth::user()->status == 3)
-                <form action="/attendance/store" method="post">
+                <form action="{{ route('clockOut') }}" method="post">
                     @csrf
                     <input type="date" name="date" value="{{ now()->format('Y-m-d') }}" style="display: none">
                     <input type="time" id="time_logged" name="time_logged"

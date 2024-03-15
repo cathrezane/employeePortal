@@ -44,6 +44,9 @@ Route::get('/user/home', function () {
 
 Route::get('/attendance', [AttendanceController::class, 'index']);
 Route::post('/attendance/store', [AttendanceController::class, 'enterTime']);
+Route::post('attendance/store/on-Break', [AttendanceController::class, 'onBreak'])->name('onBreak');
+Route::post('attendancne/store/break-in', [AttendanceController::class, 'breakIn'])->name('breakIn');
+Route::post('attendance/store/clock-out', [AttendanceController::class, 'clockOut'])->name('clockOut');
 
 // Route::get('/schedule', function () {
 //     return view('pages.agent.schedule');

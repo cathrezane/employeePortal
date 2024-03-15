@@ -16,9 +16,25 @@ class AttendanceController extends Controller
     //
     public function index()
     {
-
-
         $results = Attendances::where('user_id',Auth::user()->id)->get();
+
+        // $today = Carbon::today()->format('Y-m-d'); // Ensure format matches database
+
+        // $breakTimeStarted = Attendances::where('user_id', Auth::user()->id)
+        //                                  ->where('status', 2)
+        //                                  ->where('time_logged', $today)
+        //                                  ->first();
+
+        //                                  dd($breakTimeStarted);
+
+        return view('pages.agent.attendance')->with(['results' => $results]);
+    }
+
+    public function enterTime(Request $request)
+    {
+        //Clock In 
+        //Attendance Status will be Proced only in this function
+        $user = User::find(Auth::user()->id);
 
         $attendance = Attendances::where('user_id', Auth::user()->id)->get();
 
@@ -42,59 +58,189 @@ class AttendanceController extends Controller
  
         $gracePeriodEnd = Carbon::parse($shift->start_time)->addMinutes(1); // One-minute grace period after start
 
-        //Checks Schedule Status
+        // Attendance Status 
+        // 1 = Ontime 
+        // 2 = Late 
+        // 3 = Absent 
+        // 4 = Break 
+        // 5 = OverBreak
+        // 6 = Not OverBreak
+        // 7 = Clocked Out
 
         if ($dayChecked) {
-            $currentTime = Carbon::now();
-            // Check for early arrival (before start time)
-            if ($currentTime < $shift->start_time) {
-              dd("On Time"); // Employee is considered on time if early
-            }
-          
-            // Check for grace period (within one minute after start time)
-            elseif ($currentTime <= $gracePeriodEnd) {
-              dd("On Time"); // Employee is on time within the grace period
-            }
-          
-            // If not early or within grace period, employee is late
-            else {
-              dd("Late"); // Employee is late
-            }
-          } else {
-            dd("You are not scheduled to work today! katulog didto!");
+          $currentTime = Carbon::now();
+        
+          // Calculate 4 hours past start time
+          $fourHoursAfterStart = Carbon::parse($shift->start_time)->addHours(4);
+        
+          // Check for early arrival (before start time)
+          if ($currentTime < $shift->start_time) {
+             // Employee is considered on time if early
+             $attendanceData = [
+              'attendanceStatus' => 1,
+              'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
+              'user_id' => $request->user_id,
+              'date' => $request->date,
+              'status' => $request->status
+            ];
+
+            $user->update(['status' => $attendanceData['status']]);
+
+            Attendances::create($attendanceData);
+
+            session()->flash('success', "Good Job! You are on time today!");
+
+            return redirect('/home');
           }
+        
+          // Check for grace period (within one minute after start time)
+          elseif ($currentTime <= $gracePeriodEnd) {
+            $attendanceData = [
+              'attendanceStatus' => 1,
+              'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
+              'user_id' => $request->user_id,
+              'date' => $request->date,
+              'status' => $request->status
+            ]; // Employee is on time within the grace period
 
+            $user->update(['status' => $attendanceData['status']]);
 
-        return view('pages.agent.attendance')->with(['results' => $results]);
+            Attendances::create($attendanceData);
+            
+            session()->flash('success', "Good Job! You are on time today!");
+
+            return redirect('/home');
+          }
+        
+          // If not early or within grace period, check for absence based on 4-hour mark
+          else {
+            if ($currentTime > $fourHoursAfterStart) {
+              dd("Absent"); // Employee is absent if 4 hours have passed since start time
+            } else {
+              $attendanceData = [
+                'attendanceStatus' => 2,
+                'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
+                'user_id' => $request->user_id,
+                'date' => $request->date,
+                'status' => $request->status
+              ]; // Employee is late
+
+              $user->update(['status' => $attendanceData['status']]);
+
+              Attendances::create($attendanceData);
+
+              session()->flash('warning', "Good Job! But you are late!");
+
+              return redirect('/home');
+            }
+          }
+        } else {
+          // Employee not scheduled to work today (unchanged)
+
+          // dd("Not Today!");
+          session()->flash('error', "You are not scheduled to work today!");
+
+          return redirect('/home');
+        }
+        
+        // return redirect('/home')->with('success', "Good Job! You are on time today!");
     }
 
-    public function enterTime(Request $request)
+    public function onBreak(Request $request)
     {
+      $attendanceData = [
+        'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
+        'user_id' => $request->user_id,
+        'date' => $request->date,
+        'status' => $request->status,
+        'attendanceStatus' => 4,
+      ];
+      
+        $user = User::find(Auth::user()->id); // Replace $id with the ID of the specific model instance
+
+        $user->update(['status' => $attendanceData['status']]);
         
-        //"AttendanceStatus" checks if user is On-time/Late/Absent
+        Attendances::create($attendanceData);
 
-        //Checks if On-time
+        session()->flash('success', "Great! Take a break!");
 
+      return redirect('/home');
+    }
 
-        $attendanceData = [
+    public function breakIn(Request $request)
+    {
+      //Get Date of "Today" Compare the Time Logged where the status is 2.
+      //And the instantiation of Time being logged when user Breaking In.
+      $today = Carbon::now();
+      $user = User::find(Auth::user()->id);
+
+      $breakTimeStarted = Attendances::where('user_id', Auth::user()->id)
+          ->where('status', 2)
+          ->orderBy('time_logged', 'desc')
+          ->first();
+
+      if ($breakTimeStarted) {
+        $breakTime = Carbon::parse($breakTimeStarted->time_logged);
+        $differenceInMinutes = $breakTime->diffInMinutes($today);
+
+        if ($differenceInMinutes > 60) {
+                $attendanceData = [
+                  'attendanceStatus' => 5,
+                  'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
+                  'user_id' => $request->user_id,
+                  'date' => $request->date,
+                  'status' => $request->status
+              ];
+
+              $user->update(['status' => $attendanceData['status']]);
+
+              Attendances::create($attendanceData);
+
+              session()->flash('Warning', "Overbreak! Be aware of your break!");
+
+              return redirect('/home');
+        } else {
+          $attendanceData = [
+            'attendanceStatus' => 6,
             'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
             'user_id' => $request->user_id,
             'date' => $request->date,
             'status' => $request->status
         ];
 
-        $user = User::find(Auth::user()->id); // Replace $id with the ID of the specific model instance
-
-        // dd($attendanceData['status']);
         $user->update(['status' => $attendanceData['status']]);
 
-
-        // dd($attendanceData);
-        
         Attendances::create($attendanceData);
 
-        $success = "Data saved successfully";
-        
-        return redirect('/home')->with('success', $success);
+        session()->flash('success', "Welcome Back!");
+
+        return redirect('/home');
+        }
+      } else {
+        // Handle the scenario where no break time is found
+        session()->flash('error', "No record found!");
+        return redirect('/home');
+      }
+    }
+
+    public function clockOut(Request $request)
+    { 
+      $user = User::find(Auth::user()->id);
+
+      $attendanceData = [
+        'attendanceStatus' => 7,
+        'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
+        'user_id' => $request->user_id,
+        'date' => $request->date,
+        'status' => $request->status
+      ];
+
+      $user->update(['status' => $attendanceData['status']]);
+
+      Attendances::create($attendanceData);
+
+      session()->flash('success', "Good job Today! Rinse and Repeat!");
+
+      return redirect('/home');
     }
 }

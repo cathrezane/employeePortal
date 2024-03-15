@@ -37,7 +37,7 @@
                     @endif</td>
 
                     <td><span class="badge pill text-bg-success">On-time</span></td>
-                    {{ dd($result->schedules) }}
+                    {{-- {{ dd($result->schedules) }} --}}
                     <td>{{ \Carbon\Carbon::parse($result->time_logged)->format('h:i A') }}</td>
                     <td>{{ \Carbon\Carbon::parse($result->time_logged)->format('D, M d, Y')}}</td>
                 </tr>

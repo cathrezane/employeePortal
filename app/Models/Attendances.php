@@ -14,7 +14,8 @@ class Attendances extends Model
     protected $fillable = [
         'status', 
         'time_logged', 
-        'user_id'
+        'user_id',
+        'attendanceStatus'
     ];
 
     public function schedules()
