@@ -7,6 +7,8 @@ use App\Models\Schedule;
 use App\Models\Shift;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Workdays;
+use App\Models\Attendances;
+use Carbon\Carbon;
 
 class ScheduleController extends Controller
 {
@@ -14,9 +16,37 @@ class ScheduleController extends Controller
     {
         $userSchedule = Schedule::where('user_id', Auth::user()->id)->with('user', 'shift')->first();
 
-        // dd($userSchedule->shift);
-        // $userSchedule->shift->days;
+        // $totalHoursStartTime = Attendances::where('user_id', Auth::user()->id)->where('status', 1)->diffInMinutes(Attendances::where('user_id', Auth::user()->id)->where('status', 4));
 
+        // dd($totalHoursStartTime);
+
+        $user = Auth::user();
+
+        $clockIns = Attendances::where('user_id', $user->id)
+        ->where('status', 1)
+        ->orderBy('time_logged')
+        ->get();
+
+        $clockOuts = Attendances::where('user_id', $user->id)
+        ->where('status', 4)
+        ->orderBy('time_logged', 'desc')
+        ->get();
+
+        if (!empty($clockIns) && !empty($clockOuts)) {
+        $firstClockIn = $clockIns->first()->time_logged; // Assuming Carbon object
+        $lastClockOut = $clockOuts->first()->time_logged; // Assuming Carbon object
+
+        $castFirstClockIn = Carbon::parse($firstClockIn);
+        $castLastClockOut = Carbon::parse($lastClockOut);
+
+        $totalMinutes = $castLastClockOut->diffInMinutes($castFirstClockIn);
+        $totalHours = round($totalMinutes / 60, 2); // Convert to hours with 2 decimal places
+
+        }else{
+            $totalHours = 0;
+        }
+
+        // dd($totalHours);
 
         $workdayNames = [];
         foreach ($userSchedule->shift->days as $dayId) {
@@ -26,10 +56,10 @@ class ScheduleController extends Controller
             } else {
                 // Handle missing workday (optional: log error, display message)
             }
-}
+    }
         // dd($workdayNames);
 
-        return view('pages.agent.schedule', compact('userSchedule', 'workdayNames'));
+        return view('pages.agent.schedule', compact('userSchedule', 'workdayNames', 'totalHours'));
     }
 
     public function create()

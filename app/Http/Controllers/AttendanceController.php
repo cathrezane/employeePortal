@@ -13,21 +13,21 @@ use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
-    //
-    public function index()
+    public function index(Request $request)
     {
-        $results = Attendances::where('user_id',Auth::user()->id)->get();
+      $searchDate = $request->query('searchDate');
 
-        // $today = Carbon::today()->format('Y-m-d'); // Ensure format matches database
+      $results = Attendances::where('user_id', Auth::user()->id);
 
-        // $breakTimeStarted = Attendances::where('user_id', Auth::user()->id)
-        //                                  ->where('status', 2)
-        //                                  ->where('time_logged', $today)
-        //                                  ->first();
+      if ($searchDate) {
+        $results->whereDate('time_logged', $searchDate);
+      }
 
-        //                                  dd($breakTimeStarted);
+       $results = $results->paginate(16);
 
-        return view('pages.agent.attendance')->with(['results' => $results]);
+      $message = $results->isEmpty() ? 'No results found for the selected date.' : '';
+
+      return view('pages.agent.attendance')->with(['results' => $results, 'message' => $message]);
     }
 
     public function enterTime(Request $request)

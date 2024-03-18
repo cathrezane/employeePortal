@@ -41,7 +41,12 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.min.css
   <style>
     body{
         font-family: 'Outfit', sans-serif;
+        
     }
+
+    .btn {
+  text-transform: unset !important;
+}
     
   </style>
     <div id="app d-flex col-md-2">
@@ -68,15 +73,13 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.min.css
                         </li>
                     </ul>
                     <div class="dropdown py-sm-4 mt-sm-auto ms-auto ms-sm-0 flex-shrink-1">
-                        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://github.com/mdo.png" alt="hugenerd" width="28" height="28" class="rounded-circle">
-                            <span class="d-none d-sm-inline mx-1">Joe</span>
+                        <a href="#" class="d-flex align-middle text-white dropdown-toggle" id="dropdownUser1"  style="text-decoration:none;" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-dark">
+                                <span><i class="bi bi-person-circle"></i> {{ Str::title(Auth::user()->name) }}</i></span>
+                            </button>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
+                        <ul class="dropdown-menu dropdown-menu-white text-small shadow" aria-labelledby="dropdownUser1">
+                            <li><a class="dropdown-item" href="/logout">Profile</a></li>
                             <li><a class="dropdown-item" href="/logout">Sign out</a></li>
                         </ul>
                     </div>
