@@ -21,9 +21,9 @@ use App\Http\Controllers\ScheduleController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::post('/login', 'LoginController@login');
 

@@ -32,6 +32,9 @@
                 <div class="container h-100 col-md-7">
                     <div class="row d-flex justify-content-center align-items-center h-100">
                         <div class="col-lg-12 col-xl-11">
+                            <div class="d-flex">
+                                <a href="/" style="text-decoration: none; color: black;" ><span type="button" class="pb-2 mb-0 align-middle"><i class="bi bi-arrow-left-square fa-2x m-0"></i> Back to Homepage</span></a>
+                              </div>
                             <div class="card text-black" style="border-radius: 25px; ">
                                 <div class="card-body p-md-5">
                                     <div class="row justify-content-center">
