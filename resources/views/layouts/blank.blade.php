@@ -7,7 +7,7 @@
     <meta name="description" content="Simple CMS" />
     <meta name="author" content="Sheikh Heera" />
     {{-- <link rel="shortcut icon" href={{ assets("favicon.png") }} /> --}}
-    <title>Six Eleven Portal</title>
+    <title>SixEleven Global Services Portal</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"rel="stylesheet"/>
     <!-- Google Fonts -->

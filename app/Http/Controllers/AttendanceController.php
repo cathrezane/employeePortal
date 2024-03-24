@@ -115,7 +115,20 @@ class AttendanceController extends Controller
           // If not early or within grace period, check for absence based on 4-hour mark
           else {
             if ($currentTime > $fourHoursAfterStart) {
-              dd("Absent"); // Employee is absent if 4 hours have passed since start time
+              // Employee is absent if 4 hours have passed since start time
+              $attendanceData = [
+                'attendanceStatus' => 3,
+                'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
+                'user_id' => $request->user_id,
+                'date' => $request->date,
+                'status' => $request->status
+              ]; // Employee is Absent
+
+              Attendances::create($attendanceData);
+              
+              session()->flash('error', "Can no longer clock-in. Passed 4hrs from Scheduled Time! Absent!");
+
+              return redirect('/home');
             } else {
               $attendanceData = [
                 'attendanceStatus' => 2,
@@ -153,7 +166,7 @@ class AttendanceController extends Controller
         'user_id' => $request->user_id,
         'date' => $request->date,
         'status' => $request->status,
-        'attendanceStatus' => 4,
+        // 'attendanceStatus' => 4,
       ];
       
         $user = User::find(Auth::user()->id); // Replace $id with the ID of the specific model instance
@@ -185,7 +198,7 @@ class AttendanceController extends Controller
 
         if ($differenceInMinutes > 60) {
                 $attendanceData = [
-                  'attendanceStatus' => 5,
+                  // 'attendanceStatus' => 5,
                   'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
                   'user_id' => $request->user_id,
                   'date' => $request->date,
@@ -201,7 +214,7 @@ class AttendanceController extends Controller
               return redirect('/home');
         } else {
           $attendanceData = [
-            'attendanceStatus' => 6,
+            // 'attendanceStatus' => 6,
             'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
             'user_id' => $request->user_id,
             'date' => $request->date,
@@ -228,7 +241,7 @@ class AttendanceController extends Controller
       $user = User::find(Auth::user()->id);
 
       $attendanceData = [
-        'attendanceStatus' => 7,
+        // 'attendanceStatus' => 7,
         'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
         'user_id' => $request->user_id,
         'date' => $request->date,

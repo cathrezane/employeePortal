@@ -32,15 +32,17 @@ class ScheduleController extends Controller
         ->orderBy('time_logged', 'desc')
         ->get();
 
-        if (!empty($clockIns) && !empty($clockOuts)) {
-        $firstClockIn = $clockIns->first()->time_logged; // Assuming Carbon object
-        $lastClockOut = $clockOuts->first()->time_logged; // Assuming Carbon object
+        // dd( $clockOuts);
 
-        $castFirstClockIn = Carbon::parse($firstClockIn);
-        $castLastClockOut = Carbon::parse($lastClockOut);
+        if (!empty($clockIns) && !empty($clockOuts) && $clockOuts === null) {
+            $firstClockIn = $clockIns->first()->time_logged; // Assuming Carbon object
+            $lastClockOut = $clockOuts->first()->time_logged; // Assuming Carbon object
+            
+            $castFirstClockIn = Carbon::parse($firstClockIn);
+            $castLastClockOut = Carbon::parse($lastClockOut);
 
-        $totalMinutes = $castLastClockOut->diffInMinutes($castFirstClockIn);
-        $totalHours = round($totalMinutes / 60, 2); // Convert to hours with 2 decimal places
+            $totalMinutes = $castLastClockOut->diffInMinutes($castFirstClockIn);
+            $totalHours = round($totalMinutes / 60, 2); // Convert to hours with 2 decimal places
 
         }else{
             $totalHours = 0;

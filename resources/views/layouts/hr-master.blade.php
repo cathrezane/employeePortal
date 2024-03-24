@@ -5,11 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Simple CMS" />
-    <meta name="author" content="Sheikh Heera" />
+    <meta name="author" content="Daryl Don Abril" />
     {{-- <link rel="shortcut icon" href={{ assets("favicon.png") }} /> --}}
     <title>HR Six Eleven Portal</title>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,500;0,600;0,800;0,900;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
@@ -52,7 +53,7 @@
                           </li>
                           <li>
                               <a href="/hr/employee-attendance-log" class="nav-link px-sm-0 px-2">
-                                <i class="fs-5 bi bi-check2-square"></i><span class="ms-1 d-none d-sm-inline">Employee Attendance</span></a>
+                                <i class="fs-5 bi bi-check2-square"></i><span class="ms-1 d-none d-sm-inline">Agent Attendance</span></a>
                           </li>
                           <li>
                               <a href="/hr/schedule" class="nav-link px-sm-0 px-2">

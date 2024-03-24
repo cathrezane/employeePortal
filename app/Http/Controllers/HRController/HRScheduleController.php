@@ -15,9 +15,13 @@ class HRScheduleController extends Controller
 
     public function index()
     {
-        $home = 'This is the homepage';
+        $users = User::all();
 
-        return view('HR.home', compact('home'));
+        $agents = User::whereHas('roles', function ($query) {
+            $query->where('role_id', 1);
+          })->get();
+
+        return view('HR.home', compact('agents'));
 
     }
     public function schedule()

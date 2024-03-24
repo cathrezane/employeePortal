@@ -84,6 +84,8 @@ Route::get('/hr/shift-schedule/', [HRScheduleController::class, 'shiftScheduling
 Route::get('/hr/shiftlist/', [HRScheduleController::class, 'shiftList'])->name('shiftlist');
 Route::post('hr/shiftlist/add-shift', [HRScheduleController::class, 'addShift'])->name('addShift');
 Route::get('hr/employees/', [EmployeesController::class, 'index'])->name('hr.employees');
+
+Route::get('/hr/{id?}/attendance-log', [EmployeeAttendanceLogController::class, 'viewLog'])->name('hr_employee_attendance_log.viewLog');
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
