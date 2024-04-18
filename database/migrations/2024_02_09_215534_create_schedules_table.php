@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('shift_id');
-            $table->date('date');
+            $table->date('date')->nullable();
             $table->timestamps();
     
             $table->unique(['user_id', 'date']);

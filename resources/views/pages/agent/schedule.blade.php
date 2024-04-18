@@ -53,7 +53,7 @@
     <div class="m-2 d-flex">
       <div class="card w-20 m-5">
             <div class="card-body">
-              <h5 class="card-title">Total Hours Worked</h5>
+              <h5 class="card-title">Total Work Hours</h5>
               <div class="d-flex justify-content-around">
                   <div>
                     <p class="card-text"><u>{{ $totalHours ?? '0' }}</u></p>

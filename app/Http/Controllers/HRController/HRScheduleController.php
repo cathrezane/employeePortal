@@ -29,8 +29,15 @@ class HRScheduleController extends Controller
         // Fetch all schedules with user and shift information
         // $schedules = Schedule::with('user', 'shift')->get();
 
+        // dd($users);
+        // $users = User::with('schedule', 'schedule.shift')->get();
+        $users = User::whereHas('roles', function ($query) {
+            $query->where('role_id', 1);
+          })->get();
+
+    //    dd($users);
         // Fetch all users
-        $users = User::all();
+        // $users = User::all();
 
         // Fetch all shifts
         $shifts = Shift::all();
@@ -42,14 +49,39 @@ class HRScheduleController extends Controller
     {
         // Validate and assign schedule to user
         // You can validate input, check for existing schedules, etc.
-
-        Schedule::create([
+        $this->validate($request, [
+            'user_id' => 'required',
+            'shift_id' => 'required',
+          ]);
+        
+          // Create schedule only if validation passes (no null values)
+          $schedule = Schedule::create([
             'user_id' => $request->input('user_id'),
             'shift_id' => $request->input('shift_id'),
-            'date' => $request->input('date'),
+          ]);
+
+          session()->flash('success', "Good Job! You are on time today!");
+        
+          // Flash message based on successful creation
+          return redirect('/hr/schedule')->with(
+            $schedule ? 'success' : 'error',
+            $schedule ? 'Schedule assigned successfully' : 'Failed to assign schedule: missing required fields'
+          );
+    }
+    public function update(Request $request)
+    {
+         // Validate and update schedule data
+        $this->validate($request, [
+            'user_id' => 'required',
+            'shift_id' => 'required',
         ]);
 
-        return redirect()->route('hr_schedule.index')->with('success', 'Schedule assigned successfully');
+        // Update based on user_id (assuming shift_id is unique per user)
+        Schedule::where('user_id', $request->input('user_id'))
+                ->update(['shift_id' => $request->input('shift_id')]);
+
+        // Flash message and redirect
+        return redirect()->route('hr_schedule.index')->with('info', 'Schedule updated successfully');
     }
 
     public function addSchedule($id)
@@ -69,9 +101,11 @@ class HRScheduleController extends Controller
     {
         $schedules = Schedule::where('user_id',$id)->get();
 
+        $shiftList = Shift::all();
+
         $user = User::find($id);
 
-        return view('HR.edit-agent-schedule', ['schedules' => $schedules])->with('user', $user);
+        return view('HR.edit-agent-schedule', ['schedules' => $schedules])->with('user', $user)->with(['shiftList', $shiftList]);
     }
 
     public function shiftScheduling()

@@ -10,10 +10,10 @@
 }
 </style>
 
-<div class="col-auto float-right ml-auto">
-    <a href="{{ route('shiftlist') }}" class="btn add-btn m-r-5">Shifts</a>
-    <button type="button" class="btn add-btn m-r-5" data-bs-toggle="modal" data-bs-target="#add-schedule"> Add Shift</button>
+<div class="col-auto float-right ml-auto mt-5">
 <div class="container">
+    <label class="text-left" style="font-size: 2rem;">Shift List</label><br> 
+    <button type="button" class="btn add-btn bg-success text-white m-r-5 float-end" data-bs-toggle="modal" data-bs-target="#add-schedule"><i class="bi bi-plus-circle fa-1x"></i> Add Shift</button>
     <table class="table">
         <thead>
           <tr>
@@ -59,7 +59,7 @@
           <h5 class="modal-title" id="exampleModalLabel">Add Shift</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body mt-0">
             <form method="POST" action="{{ route('addShift') }}" id="addShiftForm">
                 @csrf
             
@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 
-                <label for="" class="p-1">Choose Workday:</label><br>
+                <label for="" class="p-1">Choose Workday: Select '(5)'<span class="text-danger fs-4">*</span></label><br>
                 @foreach ($dayNames as $row)
                     <div class="form-check form-check-inline mb-3">
                         <input type="checkbox" class="form-check-input mr-2" name="days[]" id="{{ $row->id }}" value="{{ $row->id }}">
@@ -84,12 +84,40 @@
                     </div>
                 @endforeach
                     <br>
+                    <hr>
                 <button type="submit" class="btn btn-primary">Save Schedule</button>
             </form>
         </div>
     </div>
 </div>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+  // Get elements
+  const checkboxes = document.querySelectorAll('.form-check-input');
+  const submitButton = document.querySelector('.btn-primary');
+  const selectLabel = document.querySelector('label[for=""]'); // Assuming the label is for the first checkbox
+
+  // Initial count and disabled state
+  let checkedCount = 0;
+  submitButton.disabled = true;
+  selectLabel.textContent = 'Choose Workday: Select ' + (5 - checkedCount);
+
+  // Event listener for checkboxes
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', (event) => {
+      checkedCount = document.querySelectorAll('.form-check-input:checked').length;
+
+      // Update label
+      selectLabel.textContent = 'Choose Workday: Select ' + (5 - checkedCount);
+
+      // Enable/disable button
+      submitButton.disabled = checkedCount !== 5;
+    });
+  });
+});
+</script>
 <script>
     document.getElementById('addShiftForm').addEventListener('submit', function(event) {
         var checkboxes = document.querySelectorAll('input[name="days[]"]:checked');

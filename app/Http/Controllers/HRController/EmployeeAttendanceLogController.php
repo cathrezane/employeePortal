@@ -12,30 +12,28 @@ class EmployeeAttendanceLogController extends Controller
 {
     //
     public function index()
-    {$latestAttendances = Attendances::selectRaw('user_id, MAX(created_at) AS latest_attendance')->with('user')
-        ->where('status', 1)
-        ->groupBy('user_id');
-    
-    $latestOut = Attendances::selectRaw('user_id, MAX(created_at) AS latest_out')->with('user')
-        ->where('status', 4)
-        ->groupBy('user_id');
-
-    $latestAttendancesAndOut = DB::table('attendances as A')
-        ->select(
-            'A.user_id', 
-            'U.name',
-            // Assuming 'name' is a column in the 'users' table
-            DB::raw('MAX(CASE WHEN A.status = 1 THEN A.created_at ELSE NULL END) AS latest_attendance'), 
-            DB::raw('MAX(CASE WHEN A.status = 4 THEN A.created_at ELSE NULL END) AS latest_out'), 
-            DB::raw('MAX(A.attendanceStatus) as attendance_status')
-        )
-        ->join('users as U', 'A.user_id', '=', 'U.id')
-        ->where(function ($query) {
-            $query->where('A.status', 1)
-                ->orWhere('A.status', 4);
+    {
+        $latestAttendancesAndOut = User::with(['attendances' => function ($query) {
+            $query->whereIn('status', [1, 4]) // Filter by statuses 1 and 4
+                ->orderBy('time_logged', 'desc'); // Order by time_logged descending
+        }, 'roles'])
+        ->whereHas('roles', function ($query) {
+            $query->where('role_id', 1); // Filter roles by role_id
         })
-        ->groupBy('A.user_id', 'U.name')
-        ->get();
+        ->select('users.id', 'users.name')
+        ->get()
+        ->map(function ($user) {
+            // Process attendances for each user
+            $latestAttendances = $user->attendances->groupBy('status');
+            $latestIn = $latestAttendances->has(1) ? $latestAttendances->get(1)->first()->time_logged : null;
+            $latestOut = $latestAttendances->has(4) ? $latestAttendances->get(4)->first()->time_logged : null;
+            
+            // Add latest_in and latest_out to the user object
+            $user->latest_in = $latestIn;
+            $user->latest_out = $latestOut;
+            
+            return $user;
+        });
 
         return view('hr.employee-attendance-log')->with(['latestAttendancesAndOut' => $latestAttendancesAndOut]);
     }

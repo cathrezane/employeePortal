@@ -26,7 +26,7 @@ class Schedule extends Model
     // Define the relationship with the Shift model
     public function shift()
     {
-        return $this->belongsTo(Shift::class);
+        return $this->belongsTo(Shift::class, 'shift_id');
     }
 
     // public function attendances()

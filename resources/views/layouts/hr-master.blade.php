@@ -9,6 +9,9 @@
     {{-- <link rel="shortcut icon" href={{ assets("favicon.png") }} /> --}}
     <title>HR Six Eleven Portal</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.min.css" rel="stylesheet">
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <!-- Google Fonts -->
@@ -63,12 +66,23 @@
                                 <a href="{{ route('shiftlist') }}" class="nav-link px-sm-0 px-2">
                                     <i class="fs-5 bi-calendar-week"></i><span class="ms-1 d-none d-sm-inline">Shift Scheduling</span></a>
                             </li>
-                            <li>
+                            {{-- <li>
                                 <a href="{{ route('hr.employees') }}" class="nav-link px-sm-0 px-2">
                                     <i class="fs-5 bi-calendar-week"></i><span class="ms-1 d-none d-sm-inline">Employees</span></a>
-                            </li>
+                            </li> --}}
                       </ul>
                       <div class="dropdown py-sm-4 mt-sm-auto ms-auto ms-sm-0 flex-shrink-1">
+                        <a href="#" class="d-flex align-middle text-white dropdown-toggle" id="dropdownUser1"  style="text-decoration:none;" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-dark">
+                                <span><i class="bi bi-person-circle"></i> {{ Str::title(Auth::user()->name) }}</i></span>
+                            </button>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-white text-small shadow" aria-labelledby="dropdownUser1">
+                            <li><a class="dropdown-item" href="/logout">Profile</a></li>
+                            <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+                        </ul>
+                    </div>
+                      {{-- <div class="dropdown py-sm-4 mt-sm-auto ms-auto ms-sm-0 flex-shrink-1">
                           <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                               <img src="https://github.com/mdo.png" alt="hugenerd" width="28" height="28" class="rounded-circle">
                               <span class="d-none d-sm-inline mx-1">Joe</span>
@@ -80,7 +94,7 @@
                               </li>
                               <li><a class="dropdown-item" href="/logout">Sign out</a></li>
                           </ul>
-                      </div>
+                      </div> --}}
                   </div>
               </div>
               <div class="col-md-10 d-flex flex-column h-sm-100">

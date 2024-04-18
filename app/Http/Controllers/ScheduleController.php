@@ -33,8 +33,8 @@ class ScheduleController extends Controller
         ->get();
 
         // dd( $clockOuts);
-
-        if (!empty($clockIns) && !empty($clockOuts) && $clockOuts === null) {
+        // dd(!empty($clockIns) && !empty($clockOuts) && $clockOuts !== null);
+        if (!empty($clockIns) && !empty($clockOuts) && $clockOuts !== null) {
             $firstClockIn = $clockIns->first()->time_logged; // Assuming Carbon object
             $lastClockOut = $clockOuts->first()->time_logged; // Assuming Carbon object
             

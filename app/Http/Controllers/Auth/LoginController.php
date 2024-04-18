@@ -82,7 +82,7 @@ class LoginController extends Controller
                 return view('home');
             }
             elseif ($roleID == 2) {
-                return view('admin.homoe');
+                return view('admin.home');
             }
             elseif($roleID == 3) {
                 return view('HR.home');

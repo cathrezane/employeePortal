@@ -1,1 +1,4 @@
-This is the Admin Page
+@extends('layouts.admin')
+
+@section('content')
+@endsection

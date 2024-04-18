@@ -181,42 +181,47 @@
         <div class="order-2 card p-2 col-md-6 rounded">
             <h4 class="text-dark">Recent Activity  </h4>
             <div class="card rounded">
-                @if (Auth::user()->status == 1)
-                <div class="d-flex justify-content-between p-2 bg-success text-white align-items-center">
-                    <div class="col-md-4 card text-center">
-                        <span style="font-size:30px;">Clocked-in</span>
+                @if (isset($latestActivity))
+                    @if (Auth::user()->status == 1)
+                    <div class="d-flex justify-content-between p-2 bg-success text-white align-items-center">
+                        <div class="col-md-4 card text-center">
+                            <span style="font-size:30px;">Clocked-in</span>
+                        </div>
+                        <div class="col-md-7">
+                            {{ \Carbon\Carbon::parse($latestActivity->time_logged)->format('l, F j, Y h:i A') }}
+                        </div>
                     </div>
-                    <div class="col-md-7">
-                        {{ \Carbon\Carbon::parse($latestActivity->time_logged)->format('l, F j, Y h:i A') }}
+                    @elseif (Auth::user()->status == 2)
+                    <div class="d-flex justify-content-between p-2 bg-dark text-white align-items-center">
+                        <div class="col-md-4 card text-center">
+                            <span style="font-size:30px;">On-Break</span>
+                        </div>
+                        <div class="col-md-7">
+                            {{ \Carbon\Carbon::parse($latestActivity->time_logged)->format('l, F j, Y h:i A') }}
+                        </div>
                     </div>
-                </div>
-                @elseif (Auth::user()->status == 2)
-                <div class="d-flex justify-content-between p-2 bg-dark text-white align-items-center">
-                    <div class="col-md-4 card text-center">
-                        <span style="font-size:30px;">On-Break</span>
+                    @elseif (Auth::user()->status == 3)
+                    <div class="d-flex justify-content-between p-2 bg-white text-dark align-items-center">
+                        <div class="col-md-4 card text-center">
+                            <span style="font-size:30px;">Off-Break</span>
+                        </div>
+                        <div class="col-md-7">
+                            {{ \Carbon\Carbon::parse($latestActivity->time_logged)->format('l, F j, Y h:i A') }}
+                        </div>
                     </div>
-                    <div class="col-md-7">
-                        {{ \Carbon\Carbon::parse($latestActivity->time_logged)->format('l, F j, Y h:i A') }}
+                    @elseif (Auth::user()->status == 4)
+                    <div class="d-flex justify-content-between p-2 bg-primary text-white align-items-center">
+                        <div class="col-md-4 card text-center">
+                            <span style="font-size:30px;">Clocked-out</span>
+                        </div>
+                        <div class="col-md-7">
+                            {{ \Carbon\Carbon::parse($latestActivity->time_logged)->format('l, F j, Y h:i A') }}
+                        </div>
                     </div>
-                </div>
-                @elseif (Auth::user()->status == 3)
-                <div class="d-flex justify-content-between p-2 bg-white text-dark align-items-center">
-                    <div class="col-md-4 card text-center">
-                        <span style="font-size:30px;">Off-Break</span>
-                    </div>
-                    <div class="col-md-7">
-                        {{ \Carbon\Carbon::parse($latestActivity->time_logged)->format('l, F j, Y h:i A') }}
-                    </div>
-                </div>
-                @elseif (Auth::user()->status == 4)
-                <div class="d-flex justify-content-between p-2 bg-primary text-white align-items-center">
-                    <div class="col-md-4 card text-center">
-                        <span style="font-size:30px;">Clocked-out</span>
-                    </div>
-                    <div class="col-md-7">
-                        {{ \Carbon\Carbon::parse($latestActivity->time_logged)->format('l, F j, Y h:i A') }}
-                    </div>
-                </div>
+                    @endif
+                @else
+                    <p>No latest activity found.</p>
+                    <p>Check back later.</p>
                 @endif
             </div>
             <hr class="px-2 mx-5" style="border: 1px solid gray;">
