@@ -57,13 +57,21 @@ class UserManagementController extends Controller
 
     public function store(Request $request)
     {
-        $user = new User();
+        // $user = new User();
+        // $password = Str::random(8);
+        // $user->name = $request->input('name');
+        // $user->email = $request->input('email');
+        // $user->password = bcrypt($password);
+        // $user->roles()->sync([1]);
+        // $user->save();
         $password = Str::random(8);
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->password = bcrypt($password);
-        $user->save();
-        $user->roles()->sync([1]);
+        $user = User::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => bcrypt($password),
+        ]);
+
+        $user->roles()->sync([1]); 
 
         $newUser = session()->put('newUser', $user);
         session()->put('generatedPassword', $password);

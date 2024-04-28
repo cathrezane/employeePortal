@@ -2,12 +2,8 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     {{-- @include('sweetalert::alert') --}}
-    <script src="
-https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.all.min.js
-"></script>
-<link href="
-https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.min.css
-" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.min.css" rel="stylesheet">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -38,6 +34,36 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.min.css
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body>
+    @if (session()->has('error'))
+    <script>
+        Swal.fire({
+        title: "Error!",
+        text: "{{ session()->get('error') }}",
+        icon: "error",
+        type: "error",
+        });
+    </script>
+    @endif
+    @if (session()->has('success'))
+    <script>
+        Swal.fire({
+        title: "Success!",
+        text: "{{ session()->get('success') }}",
+        icon: "success",
+        type: "success",
+        });
+    </script>
+    @endif
+    @if (session()->has('warning'))
+    <script>
+        Swal.fire({
+        title: "Warning!",
+        text: "{{ session()->get('warning') }}",
+        icon: "warning",
+        type: "warning",
+        });
+    </script>
+    @endif
   <style>
     body{
         font-family: 'Outfit', sans-serif;

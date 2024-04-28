@@ -38,8 +38,15 @@
                         <span class="me-2">{{ $day }}</span>
                     @endforeach
                 </td>
-                <td><a href="/hr/{{ $row->id }}/edit-shift" class="shift-days btn btn-warning py-0">Edit</a></td>
-            </tr>
+                {{-- <td><a href="/hr/{{ $row->id }}/edit-shift" class="shift-days btn btn-warning py-0">Edit</a></td> --}}
+                <td>
+                  <form action="{{ route('delete-sched', $row->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')  
+                    <button type="button" class="btn btn-danger py-0 delete-shift" data-shift-id="{{ $row->id }}">Delete</button>
+                  </form>
+                </td>
+              </tr>
             @endforeach
         </tbody>
       </table>
@@ -91,7 +98,53 @@
     </div>
 </div>
 
-
+<script>
+  document.querySelectorAll('.delete-shift').forEach(deleteButton => {
+    deleteButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation(); // Prevent default form submission (if applicable)
+  
+      const shiftId = this.dataset.shiftId; // Get the shift ID from the data-shift-id attribute
+  
+      Swal.fire({
+        title: 'Are you sure you want to delete this shift?',
+        text: "This action cannot be undone!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete shift!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Send an AJAX request to delete the shift using the shift ID
+          fetch(`/hr/${shiftId}/delete-shift`, {
+            method: 'DELETE',
+            headers: {
+              'X-CSRF-TOKEN': '{{ csrf_token() }}' // Laravel CSRF protection
+            }
+          })
+          .then(response => {
+            if (response.ok) {
+              // Handle successful deletion (e.g., remove row from table, show success message)
+              Swal.fire('Deleted!', 'Shift has been deleted successfully.', 'success');
+              // Assuming you have a function to remove the table row based on shift ID
+              removeTableRow(shiftId);
+            } else {
+              // Handle deletion error (e.g., show error message)
+              Swal.fire('Error!', 'Failed to delete shift. Please try again.', 'error');
+            }
+          })
+          .catch(error => {
+            // Handle network or other errors
+            console.error('Error deleting shift:', error);
+            Swal.fire('Error!', 'An unexpected error occurred. Please try again.', 'error');
+          });
+        }
+      });
+    });
+  });
+  </script>
+  
 <script>
     document.addEventListener('DOMContentLoaded', function() {
   // Get elements

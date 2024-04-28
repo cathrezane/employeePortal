@@ -1,7 +1,7 @@
 @extends('layouts.hr-master')
 
 @section('content')
-<div class="container">
+<div class="container mt-5">
   <label class="text-left" style="font-size: 2rem;">Agents Attendance Log</label>
     <table class="table">
         <thead>

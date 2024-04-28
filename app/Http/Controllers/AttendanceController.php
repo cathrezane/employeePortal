@@ -166,7 +166,7 @@ class AttendanceController extends Controller
         'user_id' => $request->user_id,
         'date' => $request->date,
         'status' => $request->status,
-        // 'attendanceStatus' => 4,
+        'attendanceStatus' => 4,
       ];
       
         $user = User::find(Auth::user()->id); // Replace $id with the ID of the specific model instance
@@ -198,7 +198,7 @@ class AttendanceController extends Controller
 
         if ($differenceInMinutes > 60) {
                 $attendanceData = [
-                  // 'attendanceStatus' => 5,
+                  'attendanceStatus' => 5,
                   'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
                   'user_id' => $request->user_id,
                   'date' => $request->date,
@@ -214,7 +214,7 @@ class AttendanceController extends Controller
               return redirect('/home');
         } else {
           $attendanceData = [
-            // 'attendanceStatus' => 6,
+            'attendanceStatus' => 6,
             'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
             'user_id' => $request->user_id,
             'date' => $request->date,
@@ -241,19 +241,41 @@ class AttendanceController extends Controller
       $user = User::find(Auth::user()->id);
 
       $attendanceData = [
-        // 'attendanceStatus' => 7,
+        'attendanceStatus' => 7,
         'time_logged' => Carbon::createFromFormat('H:i', $request->time_logged),
         'user_id' => $request->user_id,
         'date' => $request->date,
         'status' => $request->status
       ];
 
-      $user->update(['status' => $attendanceData['status']]);
+      $user->update(['status' => 7]);
 
       Attendances::create($attendanceData);
 
       session()->flash('success', "Good job Today! Rinse and Repeat!");
 
       return redirect('/home');
+    }
+
+    public function tagAgentAsAbsent(Request $request)
+    {
+      $userID = $request->user_id;
+
+      $user = User::find($userID);
+      $user->update(['status' => 3]);
+
+      $now = Carbon::now('Asia/Manila'); 
+
+      $attendanceData = [
+        'attendanceStatus' => 3,
+        'time_logged' => $now->format('Y-m-d H:i'),
+        'user_id' => $userID,
+        'date' => $now->format('Y-m-d  H:i'),
+        'status' => 3
+      ]; // Employee is Absent
+
+      Attendances::create($attendanceData);
+
+      return redirect()->back()->with('success', 'Agent marked as absent!');
     }
 }

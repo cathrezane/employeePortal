@@ -67,41 +67,7 @@
             /* Even darker green border on click */
         }
     </style>
-    
-    {{-- <div id="div1">
-        <p id="time"></p>
-        <p id="date"></p>
-    </div> --}}
-    @if (session()->has('error'))
-    <script>
-        Swal.fire({
-        title: "Error!",
-        text: "{{ session()->get('error') }}",
-        icon: "error",
-        type: "error",
-        });
-    </script>
-    @endif
-    @if (session()->has('success'))
-    <script>
-        Swal.fire({
-        title: "Success!",
-        text: "{{ session()->get('success') }}",
-        icon: "success",
-        type: "success",
-        });
-    </script>
-    @endif
-    @if (session()->has('warning'))
-    <script>
-        Swal.fire({
-        title: "Warning!",
-        text: "{{ session()->get('warning') }}",
-        icon: "warning",
-        type: "warning",
-        });
-    </script>
-    @endif
+
 
     <div class="container d-flex">
         <div class="card w-25 m-5">

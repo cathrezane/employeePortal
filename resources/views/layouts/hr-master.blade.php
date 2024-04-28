@@ -40,6 +40,40 @@
 
 
     </style>
+    <script>
+        @if (session()->has('error'))
+            Swal.fire({
+            title: "Error!",
+            text: "{{ session()->get('error') }}",
+            icon: "error",
+            type: "error",
+            });
+        @endif
+        @if (session()->has('success'))
+            Swal.fire({
+            title: "Success!",
+            text: "{{ session()->get('success') }}",
+            icon: "success",
+            type: "success",
+            });
+        @endif
+        @if (session()->has('warning'))
+            Swal.fire({
+            title: "Warning!",
+            text: "{{ session()->get('warning') }}",
+            icon: "warning",
+            type: "warning",
+            });
+        @endif
+        @if (session()->has('info'))
+            Swal.fire({
+            title: "Information!",
+            text: "{{ session()->get('info') }}",
+            icon: "info",
+            type: "info",
+            });
+        @endif
+      </script>
     <div id="app d-flex col-md-2">
         <div class="container-fluid overflow-hidden">
           <div class="row vh-100 overflow-auto">

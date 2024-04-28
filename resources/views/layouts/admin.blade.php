@@ -1,9 +1,8 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    {{-- @include('sweetalert::alert') --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.all.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.min.css" rel="stylesheet">
+    {{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -11,6 +10,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Admin Panel | SixEleven Global Services Portal</title>
+    {{-- @include('sweetalert::alert') --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <!-- Option 1: Include in HTML -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
@@ -63,6 +65,10 @@
                         <li>
                             <a href="{{ route('admin.user-management') }}" class="nav-link px-sm-0 px-2">
                               <i class="fs-5 bi bi-check2-square"></i><span class="ms-1 d-none d-sm-inline">User Management</span></a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.campaigns') }}" class="nav-link px-sm-0 px-2">
+                              <i class="fs-5 bi bi-check2-square"></i><span class="ms-1 d-none d-sm-inline">Campaigns</span></a>
                         </li>
                     </ul>
                     <div class="dropdown py-sm-4 mt-sm-auto ms-auto ms-sm-0 flex-shrink-1">

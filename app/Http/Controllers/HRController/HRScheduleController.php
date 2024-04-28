@@ -49,24 +49,34 @@ class HRScheduleController extends Controller
     {
         // Validate and assign schedule to user
         // You can validate input, check for existing schedules, etc.
+        // Add a check where the user already is in the schedule table. Users should only have one schedule.
         $this->validate($request, [
             'user_id' => 'required',
             'shift_id' => 'required',
           ]);
-        
-          // Create schedule only if validation passes (no null values)
-          $schedule = Schedule::create([
-            'user_id' => $request->input('user_id'),
-            'shift_id' => $request->input('shift_id'),
-          ]);
-
+          
+          // Check if user already has a schedule
+          $existingSchedule = Schedule::where('user_id', $request->input('user_id'))->first();
+          
+          if ($existingSchedule) {
+            // Update existing schedule with new shift_id
+            $existingSchedule->shift_id = $request->input('shift_id');
+            $existingSchedule->save();
+          
+            $message = 'Schedule updated successfully.';
+          } else {
+            // Create a new schedule record
+            $schedule = Schedule::create([
+              'user_id' => $request->input('user_id'),
+              'shift_id' => $request->input('shift_id'),
+            ]);
+          
+            $message = 'Schedule assigned successfully.';
+          }
+          
           session()->flash('success', "Good Job! You are on time today!");
-        
-          // Flash message based on successful creation
-          return redirect('/hr/schedule')->with(
-            $schedule ? 'success' : 'error',
-            $schedule ? 'Schedule assigned successfully' : 'Failed to assign schedule: missing required fields'
-          );
+          
+          return redirect('/hr/schedule')->with('success', $message);
     }
     public function update(Request $request)
     {
@@ -113,6 +123,19 @@ class HRScheduleController extends Controller
         return view('HR.shift-scheduling');
     }
 
+    public function deleteSchedule($id)
+    {
+        $shift = Shift::find($id);
+
+        Schedule::where('shift_id', $id)
+        ->update(['shift_id' => null]);
+
+        $schedule = $shift->delete();
+
+        session()->flash('success', "Good job Today! Rinse and Repeat!");
+
+        return redirect()->back();
+    }
     // public function shiftList()
     // {
     //     // $shift = Shift::with('workdays')->find(1);

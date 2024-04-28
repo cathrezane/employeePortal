@@ -17,7 +17,7 @@
         <div class="card w-25 m-5">
             <div class="card-body">
             <h5 class="card-title">Shift</h5>
-            <p class="card-text"><u>{{ $userSchedule->shift->name }}</u></p>
+            <p class="card-text"><u>{{ $userSchedule->shift->name ?? 'Schedule not set'}}</u></p>
             </div>
         </div>
 
@@ -25,11 +25,23 @@
             <div class="card-body d-flex justify-content-between mx-4">
                 <div>
                     <h5 class="card-title">Start time</h5>
-                    <p class="card-text"><u>{{ \Carbon\Carbon::parse( $userSchedule->shift->start_time)->format('h:i A') }}</u></p>
+                    <p class="card-text"><u>
+                      @if (isset($userSchedule->shift))
+                        {{ \Carbon\Carbon::parse($userSchedule->shift->start_time)->format('h:i A') }}
+                      @else
+                        Schedule Not Set
+                      @endif
+                    </u></p>
                 </div>
                 <div>
                     <h5 class="card-title">End time</h5>
-                    <p class="card-text"><u>{{ \Carbon\Carbon::parse( $userSchedule->shift->end_time)->format('h:i A') }}</u></p>
+                    <p class="card-text"><u>
+                      @if (isset($userSchedule->shift))
+                        {{ \Carbon\Carbon::parse($userSchedule->shift->end_time)->format('h:i A') }}
+                      @else
+                        Schedule Not Set
+                      @endif
+                    </u></p>
                 </div>
             </div>
         </div>

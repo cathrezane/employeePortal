@@ -1,69 +1,15 @@
 @extends('layouts.hr-master')
 
 @section('content')
-{{-- <h1>HR Schedule Management</h1> --}}
 
-{{-- <form action="{{ route('hr_schedule.assign') }}" method="post">
-    @csrf
-
-    <label for="user_id">Select User:</label>
-    <select name="user_id" id="user_id">
-        @foreach($users as $user)
-            <option value="{{ $user->id }}">{{ $user->name }}</option>
-        @endforeach
-    </select>
-
-    <label for="shift_id">Select Shift:</label>
-    <select name="shift_id" id="shift_id">
-        @foreach($shifts as $shift)
-            <option value="{{ $shift->id }}">{{ $shift->name }} ({{ $shift->start_time }} - {{ $shift->end_time }})</option>
-        @endforeach
-    </select>
-
-    <button type="submit">Assign Schedule</button>
-</form> --}}
-
-<script>
-  @if (session()->has('error'))
-      Swal.fire({
-      title: "Error!",
-      text: "{{ session()->get('error') }}",
-      icon: "error",
-      type: "error",
-      });
-  @endif
-  @if (session()->has('success'))
-      Swal.fire({
-      title: "Success!",
-      text: "{{ session()->get('success') }}",
-      icon: "success",
-      type: "success",
-      });
-  @endif
-  @if (session()->has('warning'))
-      Swal.fire({
-      title: "Warning!",
-      text: "{{ session()->get('warning') }}",
-      icon: "warning",
-      type: "warning",
-      });
-  @endif
-  @if (session()->has('info'))
-      Swal.fire({
-      title: "Information!",
-      text: "{{ session()->get('info') }}",
-      icon: "info",
-      type: "info",
-      });
-  @endif
-</script>
-
-<h4 class="mt-3">Agents</h4>
-<table class="table">
+<div class="container mt-5">
+<label class="text-left" style="font-size: 2rem;">Agents</label><br> 
+<table class="table mt-3">
     <thead>
       <tr>
         <th class="text-center" scope="col">No.</th>
         <th class="text-center" scope="col">Name</th>
+        <th class="text-center" scope="col">Status</th>
         {{-- <th class="text-center" scope="col">Campaign</th> --}}
         {{-- <th class="text-center" scope="col">Operations Manager</th> --}}
         <th class="text-center">Schedule</th>
@@ -76,11 +22,30 @@
       <tr>
             <td class="align-middle text-center">{{ $loop->iteration }}</td>
             <td class="align-middle text-center">{{ $user->name }}</td>
+            <td class="align-middle text-center">
+                @if ($user->status == null)
+                    <span class="badge rounded-pill bg-white text-dark">Empty</span>
+                @elseif ($user->status == 1)
+                    <span class="badge rounded-pill text-bg-success">Ontime</span>
+                @elseif ($user->status == 2)
+                    <span class="badge rounded-pill text-bg-danger">Late</span>
+                @elseif ($user->status == 3)
+                    <span class="badge rounded-pill text-bg-danger align-middle">Absent</span>
+                @elseif ($user->status == 4)
+                    <span class="badge rounded-pill text-bg-warning">Break</span>
+                @elseif ($user->status == 5)
+                    <span class="badge rounded-pill bg-white text-dark">Over-Break<ion-icon name="warning-outline"></ion-icon></span>
+                @elseif ($user->status == 6)
+                    <span class="badge rounded-pill bg-white text-dark">Not Over Break</span>
+                @elseif ($user->status == 7)
+                    <span class="badge rounded-pill text-bg-primary">Clocked-out</span>
+                @endif
+            </td>
             <td class="align-middle ">
               @if(isset($user->schedule->shift->name))
               <div class="align-middle justify-between d-flex">
                 <div class="col-md-6 text-end mr-3">
-                  {{ $user->schedule->shift->name }} | 
+                  {{ $user->schedule->shift->name }}
                 </div>
                 <div class="col-md-6 text-start">
                    &nbsp;  
@@ -89,31 +54,23 @@
                 </div>
               </div>
               @else
-              <form action="{{ route('hr_schedule.assign') }}" method="post">
-                @csrf
-                <input value="{{ $row->id }}" name="user_id" id="user_id" style="display: none;">
-            
-                <label for="shift_id">Select Shift:</label>
-                <select class=" form-control-sm" name="shift_id" id="shift_id">
-                  <option selected disabled>Select Shift</option>
-                    @foreach($shifts as $shift)
-                        <option value="{{ $shift->id }}">{{ $shift->name }} ({{\Carbon\Carbon::parse($shift->start_time)->format('h:i A') }} - {{\Carbon\Carbon::parse($shift->end_time)->format('h:i A') }})
-                    @endforeach
-                </select>
-            
-                <button class="btn btn-success p-1 py-0" type="submit">Save</button>
-            </form>
+              <div class="col-md-8 text-center">
+                <a type="button" class="btn btn-success py-0" href="{{ route('edit-sched', $user->id) }}" data-bs-toggle="modal" data-bs-target="#add-schedModal{{ $user->id }}">Add Schedule</a>
+                @include('HR.hr-modals.add-schedModal', ['editAgentSchedID' => $user->id])
+              </div>
               @endif
             </td>
             {{-- <td class="align-middle text-center">Sample Sample</td> --}}
             <td class="align-middle text-center">
-                <span class="btn btn-danger py-0" data-bs-toggle="modal" data-bs-target="#disable-sched">More Details</span>
+                <span class="btn btn-danger py-0" data-bs-toggle="modal" data-bs-target="#tagAbsentModal{{ $user->id }}">Tag Agent as Absent</span>
+                {{-- Absent 3 --}}
+                @include('HR.hr-modals.tag-as-absent', ['tagAgentSchedID' => $user->id])
             </td>
       </tr>
     @endforeach
     </tbody>
   </table>
-
+</div>
   <div class="modal fade" id="edit-sched" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
